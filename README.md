@@ -13,6 +13,7 @@ This project was created to learn and practice Playwright-based test automation.
 
 ```bash
 npm init playwright@latest
+```
 
 ❗ During setup, choose TypeScript as the project language.
 
@@ -21,9 +22,10 @@ https://github.com/ViktoriaKalba/yajsc-playwright/tree/main
 
 4. Create a new branch, write your tests, commit, push, and open a Pull Request.
 
-💻 Usage
+## 💻 Usage
 Paste the following example into a .spec.ts file inside the tests folder:
 
+```
 import { test, expect } from '@playwright/test';
 
 test('Alert disappears in 8 seconds', async ({ page }) => {
@@ -33,16 +35,18 @@ test('Alert disappears in 8 seconds', async ({ page }) => {
   await expect(alert).toBeVisible();
   await expect(alert).not.toBeVisible({ timeout: 8000 });
 });
-
+```
 Run your test:
+```bash
 npx playwright test
+```
 
-🤝 Contributing
+## 🤝 Contributing
 Feel free to fork the repo, create branches, and open Pull Requests as part of your learning process.
 
-📄 License
+## 📄 License
 This project is open-source and free to use.
 
-📬 Contact
+## 📬 Contact
 Created by Viktoriia Khomyk
 GitHub Repo: yajsc-playwright
