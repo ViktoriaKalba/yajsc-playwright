@@ -4,7 +4,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "playwright test"
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report"
   },
   "keywords": [],
   "author": "",
@@ -12,6 +14,8 @@
   "description": "",
   "devDependencies": {
     "@playwright/test": "^1.51.1",
-    "@types/node": "^22.14.0"
+    "@types/node": "^22.14.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   }
 }
