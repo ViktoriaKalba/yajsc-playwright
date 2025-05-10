@@ -1,4 +1,4 @@
-import { Page, Locator, expect } from '@playwright/test';
+import { Page, Locator, expect, test } from '@playwright/test';
 import { ProductsFiltersFragments, SortOption } from './fragments/ProductsFiltersFragment';
 
 export class ProductPage {
@@ -85,18 +85,17 @@ async getProductPricesOnCurrentPage(): Promise<number[]> {
     while (true) {
       const titles = await this.getProductNamesOnCurrentPage();
       allTitles.push(...titles);
-  
+      const responsePromise = this.page.waitForResponse((response) =>
+        response.url().includes('/products?sort=') 
+      && response.status() === 200
+      && response.request().method() === 'GET',
+    );
+      await this.nextButton.click();
+      await responsePromise;                
       if (await this.isNextButtonDisabled()) {
       }
-      await this.nextButton.click();
-       const responsePromise = this.page.waitForResponse((response) =>
-          response.url().includes('/products?sort=') 
-            && response.status() === 200
-            && response.request().method() === 'GET',
-        );
-        await responsePromise;              
+      return allTitles;
     }  
-    return allTitles;
   }
   
   private async isNextButtonDisabled(): Promise<boolean> {
@@ -113,19 +112,20 @@ async getProductPricesOnCurrentPage(): Promise<number[]> {
     while (true) {
       const prices = await this.getProductPricesOnCurrentPage();
       allPrices.push(...prices);
+      const responsePromise = this.page.waitForResponse((response) =>
+        response.url().includes('/products?sort=') 
+      && response.status() === 200
+      && response.request().method() === 'GET',
+    )
+      await this.nextButton.click();
+      await responsePromise;                          
   
       if (await this.isNextButtonDisabled()) {
-      }
-      await this.nextButton.click();
-       const responsePromise = this.page.waitForResponse((response) =>
-          response.url().includes('/products?sort=') 
-            && response.status() === 200
-            && response.request().method() === 'GET',
-        );
-        await responsePromise;              
-    }  
-    return allPrices;
-  }
+        return allPrices;
+      }       
+    }
+  }  
+  
 
   async expectSortedProducts(option: SortOption): Promise<void> {
     switch (option) {
@@ -133,6 +133,16 @@ async getProductPricesOnCurrentPage(): Promise<number[]> {
         const productNames = await this.collectAllProductNames(); // got sorted from UI
         const sortedProductNames = productNames.toSorted((a, b) => a.localeCompare(b)); //sorted in code
         const areProductSorted = productNames.join() === sortedProductNames.join();
+
+        await test.info().attach(`Sorted products titles by ${option} on UI`, {
+          body: JSON.stringify(productNames, null, 2),
+          contentType: 'application/json',
+        })
+        await test.info().attach(`Sorted products titles by ${option} after calculation`, {
+          body: JSON.stringify(sortedProductNames, null, 2),
+          contentType: 'application/json',
+        })
+
         expect(areProductSorted, `Products are not sorted from ${option}`).toBe(true);  
         break;
     }
@@ -140,6 +150,16 @@ async getProductPricesOnCurrentPage(): Promise<number[]> {
         const productNames = await this.collectAllProductNames(); // got sorted from UI
         const sortedProductNames = productNames.toSorted((a, b) => b.localeCompare(a)); //sorted in code
         const areProductSorted = productNames.join() === sortedProductNames.join();
+
+        await test.info().attach(`Sorted products titles by ${option} on UI`, {
+          body: JSON.stringify(productNames, null, 2),
+          contentType: 'application/json',
+        })
+        await test.info().attach(`Sorted products titles by ${option} after calculation`, {
+          body: JSON.stringify(sortedProductNames, null, 2),
+          contentType: 'application/json',
+        })
+
         expect(areProductSorted, `Products are not sorted from ${option}`).toBe(true);  
         break;
       }
@@ -147,6 +167,16 @@ async getProductPricesOnCurrentPage(): Promise<number[]> {
         const productPrices = await this.collectAllProductPrices(); // got sorted from UI
         const sortedProductPrices = productPrices.toSorted((a, b) => b - a); //sorted in code
         const areProductSorted = productPrices.join() === sortedProductPrices.join();
+
+        await test.info().attach(`Sorted products titles by ${option} on UI`, {
+          body: JSON.stringify(productPrices, null, 2),
+          contentType: 'application/json',
+        })
+        await test.info().attach(`Sorted products titles by ${option} after calculation`, {
+          body: JSON.stringify(sortedProductPrices, null, 2),
+          contentType: 'application/json',
+        })
+
         expect(areProductSorted, `Products are not sorted from ${option}`).toBe(true);  
         break;
       }
@@ -154,6 +184,16 @@ async getProductPricesOnCurrentPage(): Promise<number[]> {
         const productPrices = await this.collectAllProductPrices(); // got sorted from UI
         const sortedProductPrices = productPrices.toSorted((a, b) => a - b); //sorted in code
         const areProductSorted = productPrices.join() === sortedProductPrices.join();
+
+        await test.info().attach(`Sorted products titles by ${option} on UI`, {
+          body: JSON.stringify(productPrices, null, 2),
+          contentType: 'application/json',
+        })
+        await test.info().attach(`Sorted products titles by ${option} after calculation`, {
+          body: JSON.stringify(sortedProductPrices, null, 2),
+          contentType: 'application/json',
+        })
+        
         expect(areProductSorted, `Products are not sorted from ${option}`).toBe(true);  
         break;
       }

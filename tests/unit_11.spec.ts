@@ -15,4 +15,4 @@ dataSortOption.forEach(({sortBy}) => {
       await productPage.expectSortedProducts(sortBy);    
     });
   })
-});
+})
