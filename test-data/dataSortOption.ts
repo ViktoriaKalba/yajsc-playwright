@@ -1,4 +1,4 @@
-import { SortOption } from "../tests/pages/product.page/fragments/ProductsFiltersFragment";
+import { SortOption } from "../src/pages/product.page/fragments/ProductsFiltersFragment";
 export const dataSortOption: {sortBy: SortOption}[] = [
     {
         sortBy: 'Name (A - Z)',

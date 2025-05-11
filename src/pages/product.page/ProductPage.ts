@@ -1,5 +1,6 @@
 import { Page, Locator, expect, test } from '@playwright/test';
 import { ProductsFiltersFragments, SortOption } from './fragments/ProductsFiltersFragment';
+import { HAND_TOOLS, OTHER, POWER_TOOLS } from '../../../typings/categories';
 
 export class ProductPage {
   readonly page: Page;
@@ -180,7 +181,7 @@ async getProductPricesOnCurrentPage(): Promise<number[]> {
         expect(areProductSorted, `Products are not sorted from ${option}`).toBe(true);  
         break;
       }
-      case 'Price (Low - High)': {
+      case 'Price (Low - High)':{
         const productPrices = await this.collectAllProductPrices(); // got sorted from UI
         const sortedProductPrices = productPrices.toSorted((a, b) => a - b); //sorted in code
         const areProductSorted = productPrices.join() === sortedProductPrices.join();
@@ -193,12 +194,34 @@ async getProductPricesOnCurrentPage(): Promise<number[]> {
           body: JSON.stringify(sortedProductPrices, null, 2),
           contentType: 'application/json',
         })
-        
+
         expect(areProductSorted, `Products are not sorted from ${option}`).toBe(true);  
-        break;
+        break;        
       }
       default: throw new Error(`Unknown sort option: ${option}`);
     }
+  }
+
+  async expectFilteredProductsByCategory(categories: (HAND_TOOLS | POWER_TOOLS | OTHER)[]): Promise<void> {
+    const productNames = await this.getProductNamesOnCurrentPage();
+    console.log(`Product names: ${productNames}`);
+
+    await test.info().attach(`Filtered products by categories - ${categories.join(', ')}`, {
+      body: JSON.stringify(productNames, null, 2),
+      contentType: 'application/json',
+    });
+
+    const unexpectedProducts = productNames.filter((productName) => {
+      const unexpectedProductTitles = !categories.some((category) => productName.includes(category));      
+      return unexpectedProductTitles;
+    });
+    console.log(`Unexpected product titles: ${unexpectedProducts}`);
+
+    expect(
+        unexpectedProducts.length,
+        `Unexpected products found for categories: ${categories.join(', ')}.
+            Unexpected: ${unexpectedProducts.join(', ')}.\nAll: ${productNames.join(', ')}`,
+    ).toBe(0);
   }
   
   

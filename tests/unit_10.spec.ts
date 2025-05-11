@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
-import { LoginPage } from './pages/login.page/LoginPage';
-import { HomePage } from './pages/home.page/HomePage';
-import { ProductPage } from './pages/product.page/ProductPage';
+import { LoginPage } from '../src/pages/login.page/LoginPage';
+import { HomePage } from '../src/pages/home.page/HomePage';
+import { ProductPage } from '../src/pages/product.page/ProductPage';
 
 test('Test 1 - Verify login with valid credentials', async ({ page }) => {
 const loginPage = new LoginPage (page);
